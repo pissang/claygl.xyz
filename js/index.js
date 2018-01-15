@@ -120,6 +120,8 @@ clay.application.create('#background', {
         shadow: true
     },
 
+    event: true,
+
     init: function (app) {
 
         // Create camera
@@ -141,8 +143,50 @@ clay.application.create('#background', {
         this._initGround(app);
 
         return app.loadModel('./assets/logo/logo.gltf').then((result) => {
-            this._rootNode = result.rootNode;
+            this._logoRoot = result.rootNode;
+            this._alphaBetaMesh = result.meshes[0];
+
+            this._logoRoot.on('click', this._clickToJump.bind(this, app));
         });
+    },
+
+    _clickToJump: function (app, event) {
+        var props = {
+            y: 0,
+            sx: 1,
+            sy: 1
+        };
+        var mesh = this._logoRoot;
+
+        app.timeline.animate(props)
+            .then(300, {
+                y: 0, sx: 1.1, sy: 0.9
+            }, 'circularOut')
+            .then(100, {
+                y: 0, sx: 1.1, sy: 0.9
+            })
+            .then(300, {
+                y: 0, sx: 1, sy: 1
+            }, 'circularIn')
+            .then(500, {
+                y: 3, sx: 1, sy: 1
+            }, 'circularOut')
+            .then(500, {
+                y: 0, sx: 1, sy: 1
+            }, 'bounceOut')
+            // .then(200, {
+            //     y: 0, sx: 1.1, sy: 0.9
+            // }, 'circularOut')
+            // .then(200, {
+            //     // Must have all properties in last frame!
+            //     y: 0, sx: 1, sy: 1
+            // }, 'circularIn')
+            .during(function () {
+                mesh.position.y = props.y;
+                mesh.scale.set(props.sx, props.sy, props.sx);
+            })
+            .start();
+
     },
 
     _initGround: function (app) {
