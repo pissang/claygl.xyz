@@ -171,7 +171,7 @@ var app = clay.application.create('#background', {
                 y: 0, sx: 1, sy: 1
             }, 'circularIn')
             .then(500, {
-                y: 3, sx: 1, sy: 1
+                y: 3, sx: 0.9, sy: 1.1
             }, 'circularOut')
             .then(500, {
                 y: 0, sx: 1, sy: 1
