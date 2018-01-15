@@ -112,7 +112,7 @@ void main()
 `);
 
 /// Init background
-clay.application.create('#background', {
+var app = clay.application.create('#background', {
 
     graphic: {
         tonemapping: true,
@@ -131,7 +131,7 @@ clay.application.create('#background', {
         // Create light
         app.createDirectionalLight([-1, -3, -1]);
         app.scene.add(new clay.light.AmbientSH({
-            intensity: 0.6,
+            intensity: 0.4,
             coefficients: [0.844, 0.712, 0.691, -0.037, 0.083, 0.167, 0.343, 0.288, 0.299, -0.041, -0.021, -0.009, -0.003, -0.041, -0.064, -0.011, -0.007, -0.004, -0.031, 0.034, 0.081, -0.060, -0.049, -0.060, 0.046, 0.056, 0.050]
         }));
 
@@ -141,6 +141,8 @@ clay.application.create('#background', {
         });
 
         this._initGround(app);
+
+        this._moveX = this._moveY = 0;
 
         return app.loadModel('./assets/logo/logo.gltf').then((result) => {
             this._logoRoot = result.rootNode;
@@ -204,3 +206,7 @@ clay.application.create('#background', {
             .rotateX(-this._moveY / window.innerWidth / 2);
     }
 });
+
+window.onresize = function () {
+    app.resize();
+}
