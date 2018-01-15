@@ -3,6 +3,7 @@ body {
     text-align: center;
 
     background-color: #fff;
+    overflow: hidden;
 }
 #main {
     width: 960px;
@@ -42,4 +43,12 @@ h1 {
     font-size: 18px;
     font-weight: normal;
     font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif;
+}
+
+#background {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
