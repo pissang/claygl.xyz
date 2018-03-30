@@ -114,6 +114,8 @@ void main()
 /// Init background
 var app = clay.application.create('#background', {
 
+    // autoRender: false,
+
     graphic: {
         tonemapping: true,
         linear: true,
@@ -124,9 +126,22 @@ var app = clay.application.create('#background', {
 
     init: function (app) {
 
+        // var adv = this._adv = new ClayAdvancedRenderer(app.renderer, app.scene, app.timeline, {
+        //     shadow: {
+        //         enable: true
+        //     },
+        //     temporalSuperSampling: {
+        //         enable: true
+        //     },
+        //     postEffect: {
+        //         enable: true
+        //     }
+        // });
+
         // Create camera
         this._cameraRoot = app.createNode();
-        this._cameraRoot.add(app.createCamera([0, 3, 15], [0, 2, 0]));
+        this._cameraRoot.add(app.createCamera([0, 3, app.width > app.height ? 15 : 25], [0, 2, 0]));
+
 
         // Create light
         app.createDirectionalLight([-1, -3, -1], '#fff', 2);
@@ -135,14 +150,24 @@ var app = clay.application.create('#background', {
             coefficients: [0.844, 0.712, 0.691, -0.037, 0.083, 0.167, 0.343, 0.288, 0.299, -0.041, -0.021, -0.009, -0.003, -0.041, -0.064, -0.011, -0.007, -0.004, -0.031, 0.034, 0.081, -0.060, -0.049, -0.060, 0.046, 0.056, 0.050]
         }));
 
+        var control = new clay.plugin.OrbitControl({
+            domElement: app.container,
+            target: this._cameraRoot,
+            timeline: app.timeline
+        });
+
+        // console.error('Failed to use camera');
+        window.addEventListener('deviceorientation', function (e) {
+            control.setAlpha(-(e.beta - 80) / 2);
+            control.setBeta(e.gamma / 2);
+        });
+
         app.container.addEventListener('mousemove', (e) => {
-            this._moveX = e.clientX - window.innerWidth / 2;
-            this._moveY = e.clientY - window.innerHeight / 2;
+            control.setBeta(-(e.clientX - window.innerWidth / 2) / window.innerWidth * 60);
+            control.setAlpha((e.clientY - window.innerHeight / 2) / window.innerHeight * 30);
         });
 
         this._initGround(app);
-
-        this._moveX = this._moveY = 0;
 
         return app.loadModel('./assets/logo/logo.gltf').then((result) => {
             this._logoRoot = result.rootNode;
@@ -201,9 +226,7 @@ var app = clay.application.create('#background', {
     },
 
     loop: function () {
-        this._cameraRoot.rotation.identity()
-            .rotateY(-this._moveX / window.innerHeight / 2)
-            .rotateX(-this._moveY / window.innerWidth / 2);
+        // this._adv.render();
     }
 });
 
